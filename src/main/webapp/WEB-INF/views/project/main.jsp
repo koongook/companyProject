@@ -78,7 +78,7 @@
            
             <c:forEach items="${writtenContent}" var="content">
                 <c:choose>
-                    <c:when test="${'부장'.equals(grade) || content.name eq name || content.c_name eq name || content.wait eq '결재대기' || content.wait eq '결재완료' || content.wait eq '반려'}">
+                    <c:when test="${grade.equals('부장') || content.name eq name || content.c_name eq name || content.wait eq '결재대기' || content.wait eq '결재완료' || content.wait eq '반려'}">
                         <tr>
                             <td>${content.seq}</td>
                             <td>${content.name} ${content.grade}</td>
@@ -97,7 +97,7 @@
                             </td>
                         </tr>
                     </c:when>
-                    <c:when test="${'과장'.equals(grade) && content.wait eq '결재중' && content.c_name eq name}">
+                    <c:when test="${grade.equals('과장') && content.wait eq '결재중' && content.c_name eq name}">
                         <tr>
                             <td>${content.seq}</td>
                             <td>${content.name} ${content.grade}</td>
