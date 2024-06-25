@@ -85,7 +85,7 @@ public class ProjectController {
         HttpSession session = request.getSession();
         String name = (String) session.getAttribute("name");
         String grade = (String) session.getAttribute("grade");
-
+        epboardVO.setGrade(grade);
         epboardVO.setName(name);
         if ("임시저장".equals(action)) {
             epboardVO.setWait("임시저장");
