@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//dtd Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.com.com.board.BoardMapper">
+
+	<!-- <resultMap type="com.com.com.board.BoardVO" id="boardMap"> <result 
+		property="seq" column="seq"></result> <result property="mem_id" column="mem_id"/> 
+		<result property="mem_name" column="mem_name"/> <result property="board_subject" 
+		column="board_subject"/> <result property="board_content" column="board_content"/> 
+		<result property="reg_date" column="reg_date"/> <result property="upt_date" 
+		column="upt_date"/> <result property="view_cnt" column="view_cnt"/> </resultMap> 
+		<select id="getList" resultMap="boardMap"> SELECT * FROM board_study </select> -->
+
+	<select id="getList2" resultType="com.com.com.board.BoardVO">
+		select * from board_study
+	</select>
+
+	<insert id="insertBoard"
+		parameterType="com.com.com.board.BoardVO">
+		insert into board_study (seq, mem_name, mem_id,
+		board_subject,board_content,reg_date, upt_date, view_cnt)
+		values (seq.nextval, #{mem_name},#{mem_id},#{board_subject},
+		#{board_content}, sysdate, sysdate, 0)
+	</insert>
+
+	<select id="getBoard" resultType="com.com.com.board.BoardVO"
+		parameterType="int">
+		select * from board_study where seq=#{seq}
+	</select>
+	<select id="getFile" resultType="com.com.com.board.FileVO" parameterType = "int">
+		select * from file_study_table where list_seq=#{list_seq}
+		
+	</select>
+
+	<update id="update" parameterType="com.com.com.board.BoardVO">
+		update board_study
+		set board_subject=#{board_subject}, board_content=#{board_content}
+		where
+		seq=#{seq}
+	</update>
+	<delete id="delete" parameterType="int">
+		delete from board_study
+		where seq=#{seq}
+	</delete>
+	<update id="updateViewCnt">
+		update board_study
+		set view_cnt = view_cnt + 1
+		where
+		seq=#{seq}
+	</update>
+	<!-- 총 게시글 갯수 출력 -->
+	<select id="countBoard" resultType="int">
+		SELECT COUNT(*) FROM BOARD_STUDY
+	</select>
+
+	<!-- 페이징 처리 후 게시글 조회 -->
+	<select id="selectBoard" resultType="com.com.com.board.BoardVO">
+		SELECT * FROM (
+						SELECT ROWNUM RN, A.* FROM (SELECT * FROM BOARD_STUDY ORDER BY SEQ DESC) A
+						)
+		WHERE RN BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="selectSearch" resultType="com.com.com.board.BoardVO">
+		SELECT * FROM (
+						SELECT ROWNUM RN, A.* FROM (
+														SELECT * FROM BOARD_STUDY where
+														<choose>
+															<when test='type == "M"'>
+																mem_id like '%'||#{keyword}||'%'
+															</when>
+															<when test='type == "S"'>
+																board_subject like '%'||#{keyword}||'%'
+															</when>
+															<when test='type == "SC"'>
+																board_subject like '%'||#{keyword}||'%' or board_content like '%'||#{keyword}||'%' 
+															</when>
+														</choose>
+														ORDER BY SEQ DESC
+														) A
+						)
+		WHERE RN BETWEEN #{vo.start} AND #{vo.end}
+	
+	</select>
+	
+	<select id="countSearched" resultType="Integer">
+		select count(*) from
+		board_study where 
+		<choose>
+			<when test='type == "M"'>
+				mem_id like '%'||#{keyword}||'%'
+			</when>
+			<when test='type == "S"'>
+				board_subject like '%'||#{keyword}||'%'
+			</when>
+			<when test='type == "SC"'>
+				board_subject like '%'||#{keyword}||'%' or board_content like '%'||#{keyword}||'%' 
+			</when>
+		</choose>
+	</select>
+	
+	<select id="searchByDate" resultType="com.com.com.board.BoardVO">
+        SELECT * FROM (
+						SELECT ROWNUM RN, A.* FROM (
+        SELECT * FROM board_study
+        WHERE reg_date BETWEEN #{startDate} AND #{endDate} ORDER BY SEQ DESC
+														) A
+						)
+		WHERE RN BETWEEN #{vo.start} AND #{vo.end}
+    </select>
+    
+    <select id="countSearchedByDate" resultType="Integer">
+    	SELECT count(*) FROM board_study
+        WHERE reg_date BETWEEN #{startDate} AND #{endDate}
+    </select>
+    
+    <insert id="insertFile" parameterType="com.com.com.board.FileVO">
+    	insert into file_study_table (file_seq, real_name, save_name, reg_date, save_path, list_seq)
+    		values(se_seq.nextval,#{real_name}, #{save_name}, sysdate, #{save_path}, seq.currval)
+    	
+    </insert>
+    
+ <select id="searchBoard" parameterType="map" resultType="com.com.com.board.BoardVO">
+    SELECT seq, mem_id, mem_name, board_subject, board_content, reg_date, upt_date, view_cnt
+    FROM board_study
+    <where>
+        <if test="type != null and type != ''">
+            ${type} LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+    </where>
+</select>
+
+</mapper>
