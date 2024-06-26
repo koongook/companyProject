@@ -119,7 +119,15 @@ public class ProjectController {
         String grade = (String) session.getAttribute("grade");
 
         model.addAttribute("epboardVO", epboardVO);
-        model.addAttribute("grade", grade); // 등급 정보 추가
+        model.addAttribute("grade", grade);
+
+        if ("반려".equals(epboardVO.getWait()) || "임시저장".equals(epboardVO.getWait())) {
+            return "/project/update";
+        }
+
+        // 히스토리 데이터 추가
+        List<HistoryVO> historyList = service.getHistoryBySeq(seq);
+        model.addAttribute("historyList", historyList);
 
         return "/project/view";
     }
@@ -158,5 +166,47 @@ public class ProjectController {
 
         return "redirect:/main";
     }
+    
+    @PostMapping("/updateEP")
+    public String updateEP(EPBoardVO epboardVO, HistoryVO historyVO, @RequestParam("action") String action, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String name = (String) session.getAttribute("name");
+        String grade = (String) session.getAttribute("grade");
+
+        epboardVO.setGrade(grade);
+        epboardVO.setName(name);
+
+        if ("임시저장".equals(action)) {
+            epboardVO.setWait("임시저장");
+            // 임시저장 상태에서는 사원이나 대리인 경우 C_name을 설정하지 않음
+            if (!("사원".equals(grade) || "대리".equals(grade))) {
+                epboardVO.setC_name(name);
+            }
+        } else if ("결재".equals(action)) {
+            if ("과장".equals(grade)) {
+                epboardVO.setWait("결재중");
+                epboardVO.setCom_date(new Timestamp(System.currentTimeMillis()));
+                epboardVO.setC_name(name);
+            } else if ("부장".equals(grade)) {
+                epboardVO.setWait("결재완료");
+                epboardVO.setCom_date(new Timestamp(System.currentTimeMillis()));
+                epboardVO.setC_name(name);
+            } else {
+                epboardVO.setWait("결재대기");
+            }
+        }
+
+        service.updateBoard(epboardVO, name);
+
+        // 히스토리 저장
+        historyVO.setH_seq(epboardVO.getSeq());
+        historyVO.setReg_date(new Timestamp(System.currentTimeMillis()));
+        historyVO.setName(name);
+        historyVO.setWait(epboardVO.getWait());
+        service.insertHistory(historyVO);
+
+        return "redirect:/main";
+    }
+
 
 }

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+   <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,47 +24,45 @@
 </style>
 </head>
 <body>
-	<form id="epWriteForm" action="/EPwrite" method="post">
-		<table>
-			<tr>
-				<th>결재요청</th>
-				<th>과장</th>
-				<th>부장</th>
-			</tr>
-			<tr>
-				<td><input type="checkbox"></td>
-				<td><input type="checkbox"></td>
-				<td><input type="checkbox"></td>
-			</tr>
-		</table>
-		<table>
-			<tr><td>번호 :<input type="text" name="seq" value="${seq}" readonly> </td>
-			</tr>
-			<tr><td>작성자 :<input type="text" name="name" value="${name}"readonly> </td>
-			</tr>
-			<tr><td>제목 :<input type="text" name="title" value="${title}"> </td></tr>
-			<tr><td>내용 :<textarea name="content">${content}</textarea> </td></tr>
-			<tr><td>
-				<button type="submit" name="action" value="임시저장">임시저장</button>
-				<button type="submit" name="action" value="결재">결재</button>
-				</td>
-			</tr>
-		</table>
-	</form>
-		<table>
-			<tr>
-				<th>번호</th>
-				<th>결재일</th>
-				<th>결재자</th>
-				<th>결재상태</th>
-			</tr>
-			<tr>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-		</table>
+ <form id="updateForm" action="/updateEP" method="post">
+        <input type="hidden" id="seq" name="seq" value="${epboardVO.seq}">
+        <table>
+            <tr>
+                <td>번호 : <c:out value="${epboardVO.seq}" /></td>
+            </tr>
+            <tr>
+                <td>작성자 : <c:out value="${epboardVO.name}" /></td>
+            </tr>
+            <tr>
+                <td>제목 : <input type="text" name="title" value="${epboardVO.title}" /></td>
+            </tr>
+            <tr>
+                <td>내용 : <textarea name="content">${epboardVO.content}</textarea></td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="submit" name="action" value="임시저장">임시저장</button>
+                    <button type="submit" name="action" value="결재">결재</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+		<table id="history">
+    <tr>
+        <th>번호</th>
+        <th>결재일</th>
+        <th>결재자</th>
+        <th>결재상태</th>
+    </tr>
+    <c:forEach var="history" items="${historyList}">
+        <tr>
+            <td><c:out value="${history.h_seq}" /></td>
+            <td><fmt:formatDate value="${history.reg_date}" pattern="yyyy-MM-dd" /></td>
+            <td><c:out value="${history.name}" /></td>
+            <td><c:out value="${history.wait}" /></td>
+        </tr>
+    </c:forEach>
+</table>
 <script>
 function submitForm() {
     var formData = $("#epWriteForm").serialize(); // form 데이터 가져오기

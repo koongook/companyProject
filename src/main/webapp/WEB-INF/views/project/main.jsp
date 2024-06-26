@@ -85,7 +85,9 @@
                             <td><a href="/EPView?seq=${content.seq}">${content.title}</a></td>
                             <td><fmt:formatDate pattern="yyyy-MM-dd" value="${content.reg_date}"/></td>
                             <td><fmt:formatDate pattern="yyyy-MM-dd" value="${content.com_date}"/></td>
-                            <td>${content.c_name}</td>
+                            <td><c:if test="${epboardVO.wait != '임시저장' && (epboardVO.grade != '사원' && epboardVO.grade != '대리')}">
+            					${content.c_name}
+       						 </c:if></td>
                             <td>
                                 <c:choose>
                                     <c:when test="${content.wait == '임시저장'}">임시저장</c:when>

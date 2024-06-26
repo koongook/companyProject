@@ -26,5 +26,11 @@ public interface ProjectMapper {
             "JOIN ep_member m ON b.name = m.name " +
             "WHERE (b.wait != '임시저장') OR (b.wait = '임시저장' AND b.name = #{userName})")
     List<EPBoardVO> getAllVisibleContent(String userName);
+    // 히스토리 저장 메서드
+    public void insertHistory(HistoryVO historyVO);
+
+    // 히스토리 조회 메서드
+    public List<HistoryVO> getHistoryBySeq(int seq);
+    
 }
 

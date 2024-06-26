@@ -57,6 +57,8 @@ public class ProjectServiceImpl implements ProjectService {
     public void updateBoard(EPBoardVO epboardVO, String C_name) {
         epboardVO.setC_name(C_name);
         mapper.updateBoard(epboardVO);
+        
+        
     }
     
     public List<EPBoardVO> getVisibleContentByUser(String name) {
@@ -66,6 +68,18 @@ public class ProjectServiceImpl implements ProjectService {
     public List<EPBoardVO> getAllVisibleContent(String userName) {
         return mapper.getAllVisibleContent(userName);
     }
+    
+    @Override
+    public void insertHistory(HistoryVO historyVO) {
+        mapper.insertHistory(historyVO);
+    }
+
+    @Override
+    public List<HistoryVO> getHistoryBySeq(int seq) {
+        return mapper.getHistoryBySeq(seq);
+    }
+
+	
 
 	
     

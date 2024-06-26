@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.com</groupId>
 	<artifactId>com</artifactId>
-	<name>projectWork</name>
+	<name>companyProject</name>
 	<packaging>war</packaging>
 	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<repositories>
@@ -98,6 +98,11 @@
 			<version>1.18.24</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- <dependency>
+			<groupId>com.nexacro</groupId>
+			<artifactId>nexacro-platform</artifactId>
+			<version>1.0.0</version>
+		</dependency> -->
 
 		<dependency>
 			<groupId>org.springframework</groupId>

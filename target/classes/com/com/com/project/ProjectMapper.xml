@@ -42,9 +42,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT * FROM ep_board WHERE seq = #{seq}
     </select>
 
-    <update id="updateBoard" parameterType="com.com.com.project.EPBoardVO">
-        UPDATE ep_board SET wait = #{wait}, com_date = #{com_date, jdbcType=TIMESTAMP}, c_name = #{c_name} WHERE seq = #{seq}
+     <update id="updateBoard" parameterType="com.com.com.project.EPBoardVO">
+        UPDATE ep_board 
+        SET title = #{title}, content = #{content}, wait = #{wait}, com_date = #{com_date, jdbcType=TIMESTAMP}, c_name = #{c_name} 
+        WHERE seq = #{seq}
     </update>
+    
+      <!-- 히스토리 저장 쿼리 -->
+    <insert id="insertHistory" parameterType="com.com.com.project.HistoryVO">
+        INSERT INTO ep_history (h_seq, reg_date, name, wait)
+        VALUES (hs_board_seq.NEXTVAL, #{reg_date, jdbcType=TIMESTAMP}, #{name}, #{wait})
+    </insert>
+
+    <!-- 히스토리 조회 쿼리 -->
+    <select id="getHistoryBySeq" parameterType="int" resultType="com.com.com.project.HistoryVO">
+        SELECT h_seq, reg_date, name, wait
+        FROM ep_history
+        WHERE h_seq = #{seq}
+        ORDER BY reg_date DESC
+    </select>
     
     
     

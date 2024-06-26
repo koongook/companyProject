@@ -49,10 +49,10 @@ public class BoardController {
 	public String write(BoardVO boardVO, @RequestParam(value = "files", required = false) MultipartFile[] files) throws Exception {
 		if(files !=null && files.length > 0) {
 			service.write(boardVO, files);
-			System.out.println("낫널ㄹㄹㄹㄹㄹㄹㄹㄹ");
+			System.out.println("�궖�꼸�꽮�꽮�꽮�꽮�꽮�꽮�꽮�꽮");
 		} else {
 			service.write(boardVO);
-			System.out.println("비었어파일이 널");
+			System.out.println("鍮꾩뿀�뼱�뙆�씪�씠 �꼸");
 		}
 		return "redirect:/board/search";
 	}
@@ -78,36 +78,36 @@ public class BoardController {
 	
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public  String update(BoardVO boardVO, @RequestParam(value = "files", required = false) MultipartFile files, Model model) {
-	    // 파일이 존재하는지 확인
+	    // �뙆�씪�씠 議댁옱�븯�뒗吏� �솗�씤
 	    if (files != null && !files.isEmpty()) {
-	        // 파일 업로드 및 저장
+	        // �뙆�씪 �뾽濡쒕뱶 諛� ���옣
 	        try {
-	            // 기존 파일 삭제
+	            // 湲곗〈 �뙆�씪 �궘�젣
 	            List<FileVO> existingFiles = service.getFile(boardVO.getSeq());
 	            for (FileVO existingFile : existingFiles) {
 	                FileManager.deleteFile(existingFile.getSave_name());
 	            }
 
-	            // 새 파일 업로드
+	            // �깉 �뙆�씪 �뾽濡쒕뱶
 	            String originalFilename = files.getOriginalFilename();
 	            String savedFilename = FileManager.saveFile(files);
 	            Date now = new Date();
 
-	            // 파일 정보 업데이트
+	            // �뙆�씪 �젙蹂� �뾽�뜲�씠�듃
 	            FileVO newFile = new FileVO();
 	            newFile.setReal_name(originalFilename);
 	            newFile.setSave_name(savedFilename);
 	            newFile.setreg_date(now);
-	            newFile.setSave_path("C:\\imgFile\\"); // 실제 파일이 저장된 경로
-	            newFile.setList_seq(boardVO.getSeq()); // 게시글의 일련 번호와 연결
+	            newFile.setSave_path("C:\\imgFile\\"); // �떎�젣 �뙆�씪�씠 ���옣�맂 寃쎈줈
+	            newFile.setList_seq(boardVO.getSeq()); // 寃뚯떆湲��쓽 �씪�젴 踰덊샇�� �뿰寃�
 
-	            // 파일 정보 DB에 저장
+	            // �뙆�씪 �젙蹂� DB�뿉 ���옣
 	            service.updateBoardWithFile(boardVO, newFile);
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
 	    } else {
-	        // 파일이 없는 경우 기존 파일을 유지하도록 서비스에 업데이트 요청
+	        // �뙆�씪�씠 �뾾�뒗 寃쎌슦 湲곗〈 �뙆�씪�쓣 �쑀吏��븯�룄濡� �꽌鍮꾩뒪�뿉 �뾽�뜲�씠�듃 �슂泥�
 	        service.update(boardVO);
 	    }
 
@@ -203,25 +203,25 @@ public class BoardController {
 		
 		return "/crud/list";
 	}
-	 // 파일 다운로드 컨트롤러 메서드
+	 // �뙆�씪 �떎�슫濡쒕뱶 而⑦듃濡ㅻ윭 硫붿꽌�뱶
     @GetMapping("/downloadFile/{fileName:.+}")
     public ResponseEntity<FileSystemResource> downloadFile(@PathVariable String fileName) throws IOException {
-        // 파일 경로 설정 (실제 파일이 저장된 경로에 맞게 수정해야 합니다)
+        // �뙆�씪 寃쎈줈 �꽕�젙 (�떎�젣 �뙆�씪�씠 ���옣�맂 寃쎈줈�뿉 留욊쾶 �닔�젙�빐�빞 �빀�땲�떎)
         String directory = "C:\\imgFile\\";
         String filePath = directory + fileName;
 
-        // 파일이 존재하는지 확인
+        // �뙆�씪�씠 議댁옱�븯�뒗吏� �솗�씤
         File file = new File(filePath);
         if (!file.exists()) {
-            throw new IOException("파일을 찾을 수 없습니다: " + fileName);
+            throw new IOException("�뙆�씪�쓣 李얠쓣 �닔 �뾾�뒿�땲�떎: " + fileName);
         }
 
-        // 파일 다운로드를 위한 HttpHeaders 설정
+        // �뙆�씪 �떎�슫濡쒕뱶瑜� �쐞�븳 HttpHeaders �꽕�젙
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", fileName);
 
-        // 파일을 FileSystemResource로 변환하여 ResponseEntity로 반환
+        // �뙆�씪�쓣 FileSystemResource濡� 蹂��솚�븯�뿬 ResponseEntity濡� 諛섑솚
         Path path = Paths.get(filePath);
         FileSystemResource resource = new FileSystemResource(file);
         return ResponseEntity.ok()
@@ -230,67 +230,67 @@ public class BoardController {
                 .body(resource);
     }
     
-    @RequestMapping("nexList")
-    public void nexList(HttpServletRequest request, HttpServletResponse response) throws PlatformException {
-        HttpPlatformRequest req = new HttpPlatformRequest(request);
-        req.receiveData();  // 추가: 요청 데이터 수신
-
-        List<BoardVO> list = service.getBoardList();
-
-        DataSet ds = new DataSet("javaList");
-        ds.addColumn("seq", DataTypes.INT, 100);
-        ds.addColumn("id", DataTypes.STRING, 100);
-        ds.addColumn("name", DataTypes.STRING, 100);
-        ds.addColumn("subject", DataTypes.STRING, 100);
-        ds.addColumn("content", DataTypes.STRING, 100);
-        ds.addColumn("reg_date", DataTypes.STRING, 100);
-        ds.addColumn("upt_date", DataTypes.STRING, 100);
-        ds.addColumn("view_cnt", DataTypes.INT, 100);
-
-        for (BoardVO boardVO : list) {
-            int row = ds.newRow();
-            ds.set(row, "seq", boardVO.getSeq());
-            ds.set(row, "id", boardVO.getMem_id());
-            ds.set(row, "name", boardVO.getMem_name());
-            ds.set(row, "subject", boardVO.getBoard_subject());
-            ds.set(row, "content", boardVO.getBoard_content());
-            ds.set(row, "reg_date", boardVO.getReg_date() != null ? boardVO.getReg_date().toString() : "");
-            ds.set(row, "upt_date", boardVO.getUpt_date() != null ? boardVO.getUpt_date().toString() : "");
-            ds.set(row, "view_cnt", boardVO.getView_cnt() != null ? Integer.parseInt(boardVO.getView_cnt()) : 0);
-        }
-
-        PlatformData pData = new PlatformData();
-        pData.addDataSet(ds);
-
-        HttpPlatformResponse res = new HttpPlatformResponse(response, req);
-        res.setData(pData);
-        res.sendData();
-    }
-    @RequestMapping("nexSearch")
-    public void nexSearch(HttpServletRequest request, HttpServletResponse response) throws PlatformException {
-        HttpPlatformRequest req = new HttpPlatformRequest(request);
-        req.receiveData(); // 요청 데이터 수신
-
-        PlatformData inPd = req.getData(); // PlatformData를 통해 데이터를 받음
-        VariableList inVl = inPd.getVariableList(); // VariableList 추출
-
-        String type = inVl.getString("type");
-        String keyword = inVl.getString("keyword");
-
-        // 전달된 값 확인을 위한 출력
-        System.out.println("Received type: " + type);
-        System.out.println("Received keyword: " + keyword);
-
-        // 검색어와 타입을 통해 검색 결과 가져오기
-        DataSet resultDataSet = service.searchBoardAsDataSet(type, keyword);
-
-        PlatformData pData = new PlatformData();
-        pData.addDataSet(resultDataSet);
-
-        HttpPlatformResponse res = new HttpPlatformResponse(response, req);
-        res.setData(pData);
-        res.sendData();
-    }
+//    @RequestMapping("nexList")
+//    public void nexList(HttpServletRequest request, HttpServletResponse response) throws PlatformException {
+//        HttpPlatformRequest req = new HttpPlatformRequest(request);
+//        req.receiveData();  // 異붽�: �슂泥� �뜲�씠�꽣 �닔�떊
+//
+//        List<BoardVO> list = service.getBoardList();
+//
+//        DataSet ds = new DataSet("javaList");
+//        ds.addColumn("seq", DataTypes.INT, 100);
+//        ds.addColumn("id", DataTypes.STRING, 100);
+//        ds.addColumn("name", DataTypes.STRING, 100);
+//        ds.addColumn("subject", DataTypes.STRING, 100);
+//        ds.addColumn("content", DataTypes.STRING, 100);
+//        ds.addColumn("reg_date", DataTypes.STRING, 100);
+//        ds.addColumn("upt_date", DataTypes.STRING, 100);
+//        ds.addColumn("view_cnt", DataTypes.INT, 100);
+//
+//        for (BoardVO boardVO : list) {
+//            int row = ds.newRow();
+//            ds.set(row, "seq", boardVO.getSeq());
+//            ds.set(row, "id", boardVO.getMem_id());
+//            ds.set(row, "name", boardVO.getMem_name());
+//            ds.set(row, "subject", boardVO.getBoard_subject());
+//            ds.set(row, "content", boardVO.getBoard_content());
+//            ds.set(row, "reg_date", boardVO.getReg_date() != null ? boardVO.getReg_date().toString() : "");
+//            ds.set(row, "upt_date", boardVO.getUpt_date() != null ? boardVO.getUpt_date().toString() : "");
+//            ds.set(row, "view_cnt", boardVO.getView_cnt() != null ? Integer.parseInt(boardVO.getView_cnt()) : 0);
+//        }
+//
+//        PlatformData pData = new PlatformData();
+//        pData.addDataSet(ds);
+//
+//        HttpPlatformResponse res = new HttpPlatformResponse(response, req);
+//        res.setData(pData);
+//        res.sendData();
+//    }
+//    @RequestMapping("nexSearch")
+//    public void nexSearch(HttpServletRequest request, HttpServletResponse response) throws PlatformException {
+//        HttpPlatformRequest req = new HttpPlatformRequest(request);
+//        req.receiveData(); // �슂泥� �뜲�씠�꽣 �닔�떊
+//
+//        PlatformData inPd = req.getData(); // PlatformData瑜� �넻�빐 �뜲�씠�꽣瑜� 諛쏆쓬
+//        VariableList inVl = inPd.getVariableList(); // VariableList 異붿텧
+//
+//        String type = inVl.getString("type");
+//        String keyword = inVl.getString("keyword");
+//
+//        // �쟾�떖�맂 媛� �솗�씤�쓣 �쐞�븳 異쒕젰
+//        System.out.println("Received type: " + type);
+//        System.out.println("Received keyword: " + keyword);
+//
+//        // 寃��깋�뼱�� ���엯�쓣 �넻�빐 寃��깋 寃곌낵 媛��졇�삤湲�
+//        DataSet resultDataSet = service.searchBoardAsDataSet(type, keyword);
+//
+//        PlatformData pData = new PlatformData();
+//        pData.addDataSet(resultDataSet);
+//
+//        HttpPlatformResponse res = new HttpPlatformResponse(response, req);
+//        res.setData(pData);
+//        res.sendData();
+//    }
 
 
     

@@ -72,26 +72,22 @@ th {
             </tr>
         </table>
     </form>
-    <table>
+   <table id="history">
+    <tr>
+        <th>번호</th>
+        <th>결재일</th>
+        <th>결재자</th>
+        <th>결재상태</th>
+    </tr>
+    <c:forEach var="history" items="${historyList}">
         <tr>
-            <th>번호</th>
-            <th>결재일</th>
-            <th>결재자</th>
-            <th>결재상태</th>
+            <td><c:out value="${history.h_seq}" /></td>
+            <td><fmt:formatDate value="${history.reg_date}" pattern="yyyy-MM-dd" /></td>
+            <td><c:out value="${history.name}" /></td>
+            <td><c:out value="${history.wait}" /></td>
         </tr>
-        <!-- 결재 상태 정보를 추가로 표시하는 부분 -->
-        <tr>
-            <td><c:out value="${epboardVO.seq}" /></td>
-            <td><fmt:formatDate value="${epboardVO.com_date}" pattern="yyyy-MM-dd" /></td>
-            <td><c:out value="${epboardVO.c_name}" /></td>
-            <td><c:if test="${epboardVO.wait == '결재대기'}">결재대기</c:if>
-                <c:if test="${epboardVO.wait == '임시저장'}">임시저장</c:if>
-                <c:if test="${epboardVO.wait == '결재중'}">결재중</c:if>
-                <c:if test="${epboardVO.wait == '결재완료'}">결재완료</c:if>
-                <c:if test="${epboardVO.wait == '반려'}">반려</c:if>
-            </td>
-        </tr>
-    </table>
+    </c:forEach>
+</table>
     <script>
         $(document).ready(function() {
             var waitStatus = "${epboardVO.wait}";
