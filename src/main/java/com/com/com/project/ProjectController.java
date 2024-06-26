@@ -81,7 +81,7 @@ public class ProjectController {
     }
 
     @PostMapping("/EPwrite")
-    public String write(EPBoardVO epboardVO, @RequestParam("action") String action, HttpServletRequest request) {
+    public String write(EPBoardVO epboardVO,EPHistoryVO historyVO, @RequestParam("action") String action, HttpServletRequest request) {
         HttpSession session = request.getSession();
         String name = (String) session.getAttribute("name");
         String grade = (String) session.getAttribute("grade");
@@ -106,6 +106,16 @@ public class ProjectController {
         System.out.println("EPBoardVO: " + epboardVO); // 디버깅 출력
 
         service.write(epboardVO);
+        service.updateBoard(epboardVO, name);
+        System.out.println(1);
+        // 히스토리 저장
+        historyVO.setH_seq(epboardVO.getSeq());
+        historyVO.setReg_date(new Timestamp(System.currentTimeMillis()));
+        historyVO.setName(name);
+        historyVO.setWait(epboardVO.getWait());
+        System.out.println(2);
+        service.insertHistory(historyVO);
+        System.out.println(3);
         return "redirect:/main";
     }
 
@@ -126,14 +136,14 @@ public class ProjectController {
         }
 
         // 히스토리 데이터 추가
-        List<HistoryVO> historyList = service.getHistoryBySeq(seq);
+        List<EPHistoryVO> historyList = service.getHistoryBySeq(seq);
         model.addAttribute("historyList", historyList);
 
         return "/project/view";
     }
 
     @PostMapping("/approve")
-    public String approve(@RequestParam("seq") int seq, @RequestParam("c_name") String cName, HttpServletRequest request) {
+    public String approve(@RequestParam("seq") int seq,EPHistoryVO historyVO, @RequestParam("c_name") String cName, HttpServletRequest request) {
         HttpSession session = request.getSession();
         String grade = (String) session.getAttribute("grade");
         String name = (String) session.getAttribute("name");
@@ -150,6 +160,16 @@ public class ProjectController {
             epboardVO.setCom_date(new Timestamp(System.currentTimeMillis())); // 결재 완료 시 결재 날짜 설정
             service.updateBoard(epboardVO, name);
         }
+        service.updateBoard(epboardVO, name);
+        System.out.println(1);
+        // 히스토리 저장
+        historyVO.setH_seq(epboardVO.getSeq());
+        historyVO.setReg_date(new Timestamp(System.currentTimeMillis()));
+        historyVO.setName(name);
+        historyVO.setWait(epboardVO.getWait());
+        System.out.println(2);
+        service.insertHistory(historyVO);
+        System.out.println(3);
         return "redirect:/main";
     }
 
@@ -168,7 +188,7 @@ public class ProjectController {
     }
     
     @PostMapping("/updateEP")
-    public String updateEP(EPBoardVO epboardVO, HistoryVO historyVO, @RequestParam("action") String action, HttpServletRequest request) {
+    public String updateEP(EPBoardVO epboardVO, EPHistoryVO historyVO, @RequestParam("action") String action, HttpServletRequest request) {
         HttpSession session = request.getSession();
         String name = (String) session.getAttribute("name");
         String grade = (String) session.getAttribute("grade");
@@ -195,16 +215,7 @@ public class ProjectController {
                 epboardVO.setWait("결재대기");
             }
         }
-
-        service.updateBoard(epboardVO, name);
-
-        // 히스토리 저장
-        historyVO.setH_seq(epboardVO.getSeq());
-        historyVO.setReg_date(new Timestamp(System.currentTimeMillis()));
-        historyVO.setName(name);
-        historyVO.setWait(epboardVO.getWait());
-        service.insertHistory(historyVO);
-
+       
         return "redirect:/main";
     }
 

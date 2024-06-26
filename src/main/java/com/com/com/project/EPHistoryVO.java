@@ -2,7 +2,7 @@ package com.com.com.project;
 
 import java.sql.Timestamp;
 
-public class HistoryVO {
+public class EPHistoryVO {
 	
 	private int h_seq;
 	private Timestamp reg_date;

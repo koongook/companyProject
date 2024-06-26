@@ -70,12 +70,12 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     @Override
-    public void insertHistory(HistoryVO historyVO) {
+    public void insertHistory(EPHistoryVO historyVO) {
         mapper.insertHistory(historyVO);
     }
 
     @Override
-    public List<HistoryVO> getHistoryBySeq(int seq) {
+    public List<EPHistoryVO> getHistoryBySeq(int seq) {
         return mapper.getHistoryBySeq(seq);
     }
 

@@ -27,10 +27,10 @@ public interface ProjectMapper {
             "WHERE (b.wait != '임시저장') OR (b.wait = '임시저장' AND b.name = #{userName})")
     List<EPBoardVO> getAllVisibleContent(String userName);
     // 히스토리 저장 메서드
-    public void insertHistory(HistoryVO historyVO);
+    public void insertHistory(EPHistoryVO historyVO);
 
     // 히스토리 조회 메서드
-    public List<HistoryVO> getHistoryBySeq(int seq);
+    public List<EPHistoryVO> getHistoryBySeq(int seq);
     
 }
 

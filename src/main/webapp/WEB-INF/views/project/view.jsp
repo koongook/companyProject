@@ -127,7 +127,7 @@ th {
                 },
                 success: function(response) {
                     // 성공 시 필요한 처리를 여기에 추가합니다.
-                    window.location.replace("http://localhost:8080/main");
+                    window.location.replace("/main");
                     // 예를 들어 페이지 새로고침 또는 다른 동작을 수행할 수 있습니다.
                 },
                 error: function(xhr, status, error) {

@@ -11,7 +11,7 @@ public interface ProjectService {
     public EPBoardVO getBoard(int seq);
     public void updateBoard(EPBoardVO epboardVO, String C_name); // 업데이트 메서드 추가
     public List<EPBoardVO> getAllVisibleContent(String userName);
-	void insertHistory(HistoryVO historyVO);
-	List<HistoryVO> getHistoryBySeq(int seq);
+	void insertHistory(EPHistoryVO historyVO);
+	List<EPHistoryVO> getHistoryBySeq(int seq);
 	
 }
