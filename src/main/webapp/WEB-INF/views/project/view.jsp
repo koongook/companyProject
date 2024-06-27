@@ -102,11 +102,14 @@ th {
             }
             // 결재중 상태일 때 과장에 체크
             else if (waitStatus === "결재중") {
+            	$("#requestCheckbox").prop("checked", true);
                 $("#managerCheckbox").prop("checked", true);
                 $("input[type='checkbox']").prop("disabled", true);
             }
             // 결재완료 상태일 때 부장에 체크
             else if (waitStatus === "결재완료") {
+            	$("#requestCheckbox").prop("checked", true);
+                $("#managerCheckbox").prop("checked", true);
                 $("#directorCheckbox").prop("checked", true);
                 // 결재완료일 때는 모든 체크박스를 비활성화
                 $("input[type='checkbox']").prop("disabled", true);

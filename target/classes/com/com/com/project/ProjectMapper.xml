@@ -44,9 +44,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
      <update id="updateBoard" parameterType="com.com.com.project.EPBoardVO">
         UPDATE ep_board 
-        SET title = #{title}, content = #{content}, wait = #{wait}, com_date = #{com_date, jdbcType=TIMESTAMP}, c_name = #{c_name} 
-        WHERE seq = #{seq}
-    </update>
+        <choose>
+        	<when test="grade == '사원'">
+        		SET title = #{title}, content = #{content}, wait = #{wait}, com_date = #{com_date, jdbcType=TIMESTAMP}
+        		WHERE seq = #{seq}
+        	</when>
+        	<when test="grade == '대리'">
+        		SET title = #{title}, content = #{content}, wait = #{wait}, com_date = #{com_date, jdbcType=TIMESTAMP}
+        		WHERE seq = #{seq}
+        	</when>
+        	<otherwise>
+        		 SET title = #{title}, content = #{content}, wait = #{wait}, com_date = #{com_date, jdbcType=TIMESTAMP}, c_name = #{c_name} 
+        		WHERE seq = #{seq}
+        	</otherwise>
+        </choose>
+      </update>
 
     <insert id="insertHistory" parameterType="com.com.com.project.EPHistoryVO">
         INSERT INTO ep_history (h_seq, reg_date, name, wait)

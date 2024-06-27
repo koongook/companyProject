@@ -81,7 +81,7 @@ public class ProjectController {
     }
 
     @PostMapping("/EPwrite")
-    public String write(EPBoardVO epboardVO,EPHistoryVO historyVO, @RequestParam("action") String action, HttpServletRequest request) {
+    public String write(EPBoardVO epboardVO, EPHistoryVO historyVO, @RequestParam("action") String action, HttpServletRequest request) {
         HttpSession session = request.getSession();
         String name = (String) session.getAttribute("name");
         String grade = (String) session.getAttribute("grade");
@@ -108,6 +108,7 @@ public class ProjectController {
         service.write(epboardVO);
         service.updateBoard(epboardVO, name);
         System.out.println(1);
+
         // 히스토리 저장
         historyVO.setH_seq(epboardVO.getSeq());
         historyVO.setReg_date(new Timestamp(System.currentTimeMillis()));
@@ -116,6 +117,7 @@ public class ProjectController {
         System.out.println(2);
         service.insertHistory(historyVO);
         System.out.println(3);
+
         return "redirect:/main";
     }
 
@@ -131,11 +133,15 @@ public class ProjectController {
         model.addAttribute("epboardVO", epboardVO);
         model.addAttribute("grade", grade);
 
+        String name = (String) session.getAttribute("name");
+        boolean isAuthor = name.equals(epboardVO.getName()); // Check if logged-in user is the author
+
+        model.addAttribute("isAuthor", isAuthor);
+
         if ("반려".equals(epboardVO.getWait()) || "임시저장".equals(epboardVO.getWait())) {
             return "/project/update";
         }
 
-        // 히스토리 데이터 추가
         List<EPHistoryVO> historyList = service.getHistoryBySeq(seq);
         model.addAttribute("historyList", historyList);
 
@@ -188,18 +194,27 @@ public class ProjectController {
     }
     
     @PostMapping("/updateEP")
-    public String updateEP(EPBoardVO epboardVO, EPHistoryVO historyVO, @RequestParam("action") String action, HttpServletRequest request) {
+    public String updateEP(EPBoardVO epboardVO, EPHistoryVO historyVO, @RequestParam("action") String action, HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
         String name = (String) session.getAttribute("name");
         String grade = (String) session.getAttribute("grade");
 
+        // Get existing board details
+        EPBoardVO existingBoard = service.getBoard(epboardVO.getSeq());
+
+        // Check if the logged-in user is the author
+        boolean isAuthor = name.equals(existingBoard.getName());
+
+        // Set isAuthor attribute to the model
+        model.addAttribute("isAuthor", isAuthor);
+
+        // Proceed with update logic based on isAuthor
         epboardVO.setGrade(grade);
         epboardVO.setName(name);
 
         if ("임시저장".equals(action)) {
             epboardVO.setWait("임시저장");
-            // 임시저장 상태에서는 사원이나 대리인 경우 C_name을 설정하지 않음
-            if (!("사원".equals(grade) || "대리".equals(grade))) {
+            if (!isAuthor) {
                 epboardVO.setC_name(name);
             }
         } else if ("결재".equals(action)) {
@@ -215,9 +230,22 @@ public class ProjectController {
                 epboardVO.setWait("결재대기");
             }
         }
-       
+
+        // Update the board
+        service.updateBoard(epboardVO, name);
+
+        // Save history
+        historyVO.setH_seq(epboardVO.getSeq());
+        historyVO.setReg_date(new Timestamp(System.currentTimeMillis()));
+        historyVO.setName(name);
+        historyVO.setWait(epboardVO.getWait());
+        service.insertHistory(historyVO);
+
         return "redirect:/main";
     }
+
+
+
 
 
 }

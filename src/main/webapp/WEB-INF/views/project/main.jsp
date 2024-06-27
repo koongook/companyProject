@@ -76,18 +76,16 @@
                 <th>결재상태</th>
             </tr>
            
-            <c:forEach items="${writtenContent}" var="content">
+             <c:forEach items="${writtenContent}" var="content">
                 <c:choose>
-                    <c:when test="${grade.equals('부장') || content.name eq name || content.c_name eq name || content.wait eq '결재대기' || content.wait eq '결재완료' || content.wait eq '반려'}">
+                    <c:when test="${grade.equals('부장') && content.wait != '결재대기'}">
                         <tr>
                             <td>${content.seq}</td>
                             <td>${content.name} ${content.grade}</td>
                             <td><a href="/EPView?seq=${content.seq}">${content.title}</a></td>
                             <td><fmt:formatDate pattern="yyyy-MM-dd" value="${content.reg_date}"/></td>
                             <td><fmt:formatDate pattern="yyyy-MM-dd" value="${content.com_date}"/></td>
-                            <td><c:if test="${epboardVO.wait != '임시저장' && (epboardVO.grade != '사원' && epboardVO.grade != '대리')}">
-            					${content.c_name}
-       						 </c:if></td>
+                            <td>${content.c_name}</td>
                             <td>
                                 <c:choose>
                                     <c:when test="${content.wait == '임시저장'}">임시저장</c:when>
@@ -108,6 +106,25 @@
                             <td><fmt:formatDate pattern="yyyy-MM-dd" value="${content.com_date}"/></td>
                             <td>${content.c_name}</td>
                             <td>결재중</td>
+                        </tr>
+                    </c:when>
+                    <c:when test="${!grade.equals('부장')}">
+                        <tr>
+                            <td>${content.seq}</td>
+                            <td>${content.name} ${content.grade}</td>
+                            <td><a href="/EPView?seq=${content.seq}">${content.title}</a></td>
+                            <td><fmt:formatDate pattern="yyyy-MM-dd" value="${content.reg_date}"/></td>
+                            <td><fmt:formatDate pattern="yyyy-MM-dd" value="${content.com_date}"/></td>
+                            <td>${content.c_name}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${content.wait == '임시저장'}">임시저장</c:when>
+                                    <c:when test="${content.wait == '결재대기'}">결재대기</c:when>
+                                    <c:when test="${content.wait == '결재중'}">결재중</c:when>
+                                    <c:when test="${content.wait == '결재완료'}">결재완료</c:when>
+                                    <c:when test="${content.wait == '반려'}">반려</c:when>
+                                </c:choose>
+                            </td>
                         </tr>
                     </c:when>
                 </c:choose>

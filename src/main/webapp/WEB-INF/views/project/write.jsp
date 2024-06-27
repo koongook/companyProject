@@ -24,6 +24,7 @@
 </head>
 <body>
 	<form id="epWriteForm" action="/EPwrite" method="post">
+	
 		<table>
 			<tr>
 				<th>결재요청</th>
@@ -31,9 +32,9 @@
 				<th>부장</th>
 			</tr>
 			<tr>
-				<td><input type="checkbox"></td>
-				<td><input type="checkbox"></td>
-				<td><input type="checkbox"></td>
+				<td><input type="checkbox" disabled></td>
+				<td><input type="checkbox" disabled></td>
+				<td><input type="checkbox" disabled></td>
 			</tr>
 		</table>
 		<table>

@@ -57,9 +57,8 @@ public class ProjectServiceImpl implements ProjectService {
     public void updateBoard(EPBoardVO epboardVO, String C_name) {
         epboardVO.setC_name(C_name);
         mapper.updateBoard(epboardVO);
-        
-        
     }
+
     
     public List<EPBoardVO> getVisibleContentByUser(String name) {
         return mapper.getVisibleContentByUser(name);
