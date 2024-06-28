@@ -60,12 +60,12 @@ th {
                         <form id="rejectForm" method="post" style="display:inline;">
                             <input type="hidden" id="seq" name="seq" value="${epboardVO.seq}">
                             <input type="hidden" id="c_name" name="c_name" value="${name}">
-                            <button type="button" onclick="submitRejectForm()">반려</button>
+                            <button type="button" onclick="submitRejectForm()" style="display:${epboardVO.wait == '반려' ? 'none' : 'inline'}">반려</button>
                         </form>
                         <form id="approveForm" action="/approve" method="post" style="display:inline;">
                             <input type="hidden" id="seq" name="seq" value="${epboardVO.seq}">
                             <input type="hidden" id="c_name" name="c_name" value="${name}">
-                            <button type="submit">결재</button>
+                            <button type="submit" style="display:${epboardVO.wait == '반려' ? 'none' : 'inline'}">결재</button>
                         </form>
                     </c:if>
                 </td>
@@ -87,7 +87,7 @@ th {
             <td><c:out value="${history.wait}" /></td>
         </tr>
     </c:forEach>
-</table>
+	</table>
     <script>
         $(document).ready(function() {
             var waitStatus = "${epboardVO.wait}";
@@ -113,6 +113,10 @@ th {
                 $("#directorCheckbox").prop("checked", true);
                 // 결재완료일 때는 모든 체크박스를 비활성화
                 $("input[type='checkbox']").prop("disabled", true);
+            }
+            
+            else if (waitStatus === "반려") {
+            	$("input[type='checkbox']").prop("disabled", true);
             }
         });
 

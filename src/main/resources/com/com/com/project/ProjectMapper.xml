@@ -13,13 +13,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         INSERT INTO ep_board (seq, name, title, content, reg_date, com_date, c_name, wait)
         <choose>
         	<when test="grade == '과장'">
-        	VALUES (ep_board_seq.NEXTVAL, #{name}, #{title}, #{content}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{name}, #{wait})
+        	VALUES (#{seq}, #{name}, #{title}, #{content}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{name}, #{wait})
         	</when>
         	<when test="grade == '부장'">
-        	VALUES (ep_board_seq.NEXTVAL, #{name}, #{title}, #{content}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{name}, #{wait})
+        	VALUES (#{seq}, #{name}, #{title}, #{content}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{name}, #{wait})
         	</when>
         	<otherwise>
-        	VALUES (ep_board_seq.NEXTVAL, #{name}, #{title}, #{content}, CURRENT_TIMESTAMP, null, null, #{wait})
+        	VALUES (#{seq}, #{name}, #{title}, #{content}, CURRENT_TIMESTAMP, null, null, #{wait})
         	</otherwise>
         </choose>
     </insert>

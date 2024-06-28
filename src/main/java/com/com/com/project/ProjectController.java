@@ -135,15 +135,14 @@ public class ProjectController {
 
         String name = (String) session.getAttribute("name");
         boolean isAuthor = name.equals(epboardVO.getName()); // Check if logged-in user is the author
-
         model.addAttribute("isAuthor", isAuthor);
-
-        if ("반려".equals(epboardVO.getWait()) || "임시저장".equals(epboardVO.getWait())) {
-            return "/project/update";
-        }
-
+        
         List<EPHistoryVO> historyList = service.getHistoryBySeq(seq);
         model.addAttribute("historyList", historyList);
+        
+        if (isAuthor && ("반려".equals(epboardVO.getWait()) || "임시저장".equals(epboardVO.getWait()))) {
+            return "/project/update";
+        }
 
         return "/project/view";
     }
@@ -180,14 +179,19 @@ public class ProjectController {
     }
 
     @PostMapping("/reject")
-    public String reject(@RequestParam("seq") int seq, HttpServletRequest request) {
+    public String reject(@RequestParam("seq") int seq, HttpServletRequest request, EPHistoryVO historyVO) {
         HttpSession session = request.getSession();
         String name = (String) session.getAttribute("name");
 
         EPBoardVO epboardVO = service.getBoard(seq);
         epboardVO.setWait("반려");
         epboardVO.setC_name(name);
-
+        historyVO.setH_seq(epboardVO.getSeq());
+        historyVO.setReg_date(new Timestamp(System.currentTimeMillis()));
+        historyVO.setName(name);
+        historyVO.setWait(epboardVO.getWait());
+        
+        service.insertHistory(historyVO);
         service.updateBoard(epboardVO, name);
 
         return "redirect:/main";
