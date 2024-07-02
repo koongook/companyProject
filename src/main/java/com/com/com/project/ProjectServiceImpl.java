@@ -77,7 +77,16 @@ public class ProjectServiceImpl implements ProjectService {
     public List<EPHistoryVO> getHistoryBySeq(int seq) {
         return mapper.getHistoryBySeq(seq);
     }
-
+    
+    @Override
+    public List<EPBoardVO> searchContent(String searchType, String searchKeyword, String approvalStatus, String startDate, String endDate, String userName, String grade) {
+        return mapper.searchContent(searchType, searchKeyword, approvalStatus, startDate, endDate, userName, grade);
+    }
+    
+    @Override
+    public MemberVO getMemberByName(String name) {
+        return mapper.getMemberByName(name);
+    }
 	
 
 	

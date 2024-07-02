@@ -13,5 +13,8 @@ public interface ProjectService {
     public List<EPBoardVO> getAllVisibleContent(String userName);
 	void insertHistory(EPHistoryVO historyVO);
 	List<EPHistoryVO> getHistoryBySeq(int seq);
+	List<EPBoardVO> searchContent(String searchType, String searchKeyword, String approvalStatus, String startDate, String endDate, String userName, String grade);
+	MemberVO getMemberByName(String name);
+	
 	
 }

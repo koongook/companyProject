@@ -3,6 +3,7 @@ package com.com.com.project;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 @Mapper
@@ -31,6 +32,9 @@ public interface ProjectMapper {
 
     // 히스토리 조회 메서드
     public List<EPHistoryVO> getHistoryBySeq(int seq);
+    
+    List<EPBoardVO> searchContent(@Param("searchType") String searchType, @Param("searchKeyword") String searchKeyword, @Param("approvalStatus") String approvalStatus, @Param("startDate") String startDate, @Param("endDate") String endDate, @Param("userName") String userName, @Param("grade") String grade);
+    public MemberVO getMemberByName(String name);
     
 }
 

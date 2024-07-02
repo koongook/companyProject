@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class ProjectController {
@@ -44,7 +45,11 @@ public class ProjectController {
     }
 
     @GetMapping("/main")
-    public String main(HttpServletRequest request, Model model) {
+    public String main(@RequestParam(value = "searchType", required = false) String searchType,
+                       @RequestParam(value = "searchKeyword", required = false) String searchKeyword,
+                       @RequestParam(value = "approvalStatus", required = false) String approvalStatus,
+                       @RequestParam(value = "dateRange", required = false) String dateRange,
+                       HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
         String id = (String) session.getAttribute("id");
 
@@ -58,6 +63,27 @@ public class ProjectController {
                 writtenContent = service.getWrittenContentByUser(member.getName());
             }
 
+            // 검색 조건 적용
+            String startDate = null;
+            String endDate = null;
+            if (dateRange != null && !dateRange.isEmpty()) {
+                String[] dates = dateRange.split(" - ");
+                if (dates.length == 2) {
+                    startDate = dates[0].trim();
+                    endDate = dates[1].trim();
+                } else {
+                    // 날짜 형식이 잘못된 경우, 로그 추가
+                    System.err.println("Invalid dateRange format: " + dateRange);
+                }
+            }
+
+            if ((searchType != null && !searchType.isEmpty()) || 
+                (searchKeyword != null && !searchKeyword.isEmpty()) || 
+                (approvalStatus != null && !approvalStatus.isEmpty()) || 
+                (startDate != null && endDate != null)) {
+                writtenContent = service.searchContent(searchType, searchKeyword, approvalStatus, startDate, endDate, member.getName(), member.getGrade());
+            }
+
             model.addAttribute("writtenContent", writtenContent);
             model.addAttribute("memberList", member);
             return "/project/main";
@@ -65,6 +91,10 @@ public class ProjectController {
             return "redirect:/project";
         }
     }
+
+
+
+
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
@@ -247,6 +277,44 @@ public class ProjectController {
 
         return "redirect:/main";
     }
+    
+    @GetMapping("/delegateApproval")
+    public String getDelegateApprovalPage(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String name = (String) session.getAttribute("name");
+        String grade = (String) session.getAttribute("grade");
+        model.addAttribute("name", name);
+        model.addAttribute("grade", grade);
+        return "project/delegateApproval";
+    }
+
+    @PostMapping("/delegateApproval")
+    public String postDelegateApproval(@RequestParam("delegate") String delegate,
+                                       @RequestParam("substitute") String substitute,
+                                       @RequestParam("grade") String grade,
+                                       HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String name = (String) session.getAttribute("name");
+
+        // 대리 결재 처리 로직 (여기에 필요한 로직을 추가하세요)
+        System.out.println("대리결재자: " + delegate);
+        System.out.println("대리자: " + substitute);
+        System.out.println("결재자 이름: " + name);
+
+        // 성공적으로 처리된 후 메인 페이지로 리디렉션
+        return "redirect:/main";
+    }
+    
+    @GetMapping("/getGradeByName")
+    @ResponseBody
+    public String getGradeByName(@RequestParam("name") String name) {
+        MemberVO member = service.getMemberByName(name);
+        if (member != null) {
+            return member.getGrade();
+        }
+        return "";
+    }
+
 
 
 

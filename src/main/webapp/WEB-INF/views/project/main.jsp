@@ -20,10 +20,28 @@
         background-color: #f2f2f2; /* 헤더 배경색 */
     }
 </style>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script>
     function goToWriteForm() {
         window.location.href = '/writeForm';
     }
+    function goToDelegateApproval() {
+        window.location.href = '/delegateApproval';
+    }
+    
+    $(function() {
+    	  $('input[name="dateRange"]').daterangepicker({
+    	    timePicker: true,
+    	    startDate: moment().startOf('hour'),
+    	    endDate: moment().startOf('hour').add(32, 'hour'),
+    	    locale: {
+    	      format: 'YYYY-MM-DD'
+    	    }
+    	  });
+    	});
 </script>
 </head>
 <body>
@@ -43,26 +61,29 @@
         <br>
         <button type="submit" onclick="goToWriteForm()">글쓰기</button>
         <% if ("과장".equals(grade)) { %>
-            <button>대리 결재</button>
+            <button type="submit" onclick="goToDelegateApproval()">대리 결재</button>
         <% } %>
     </div>
     <div>
-        <select>
+     <form action="/main" method="get">
+        <select name="searchType">
             <option>선택</option>
-            <option>작성자</option>
-            <option>결재자</option>
-            <option>제목+내용</option>
+            <option value="작성자">작성자</option>
+            <option value="결재자">결재자</option>
+            <option value="제목+내용">제목+내용</option>
         </select>
-        <input type="text">
-        <select>
-            <option>결재상태</option>
-            <option>임시저장</option>
-            <option>결재대기</option>
-            <option>결재중</option>
-            <option>결재완료</option>
-            <option>반려</option>
-        </select>
-        <button>검색</button>
+        <input type="text" name="searchKeyword">
+         <select name="approvalStatus">
+            <option value="">결재상태</option>
+            <option value="임시저장">임시저장</option>
+            <option value="결재대기">결재대기</option>
+            <option value="결재중">결재중</option>
+            <option value="결재완료">결재완료</option>
+            <option value="반려">반려</option>
+        </select><br>
+        <input type="text" name="dateRange" />
+        <button type="submit">검색</button>
+        </form>
     </div>
     <div>
         <table>
