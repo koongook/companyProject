@@ -60,7 +60,7 @@
         </form>
         <br>
         <button type="submit" onclick="goToWriteForm()">글쓰기</button>
-        <% if ("과장".equals(grade)) { %>
+        <% if (("과장".equals(grade)) || ("부장".equals(grade))) { %>
             <button type="submit" onclick="goToDelegateApproval()">대리 결재</button>
         <% } %>
     </div>

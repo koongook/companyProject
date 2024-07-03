@@ -9,26 +9,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT * FROM ep_member WHERE id = #{id}
     </select>
 
-   <insert id="insertBoard" parameterType="com.com.com.project.EPBoardVO">
+    <insert id="insertBoard" parameterType="com.com.com.project.EPBoardVO">
         INSERT INTO ep_board (seq, name, title, content, reg_date, com_date, c_name, wait)
         <choose>
-        	<when test="grade == '과장'">
-        	VALUES (#{seq}, #{name}, #{title}, #{content}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{name}, #{wait,jdbcType=VARCHAR})
-        	</when>
-        	<when test="grade == '부장'">
-        	VALUES (#{seq}, #{name}, #{title}, #{content}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{name}, #{wait,jdbcType=VARCHAR})
-        	</when>
-        	<otherwise>
-        	VALUES (#{seq}, #{name}, #{title}, #{content}, CURRENT_TIMESTAMP, null, null, #{wait,jdbcType=VARCHAR})
-        	</otherwise>
+            <when test="grade == '과장'">
+                VALUES (#{seq}, #{name}, #{title}, #{content}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{name}, #{wait,jdbcType=VARCHAR})
+            </when>
+            <when test="grade == '부장'">
+                VALUES (#{seq}, #{name}, #{title}, #{content}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{name}, #{wait,jdbcType=VARCHAR})
+            </when>
+            <otherwise>
+                VALUES (#{seq}, #{name}, #{title}, #{content}, CURRENT_TIMESTAMP, null, null, #{wait,jdbcType=VARCHAR})
+            </otherwise>
         </choose>
     </insert>
-
 
     <select id="getAllWrittenContent" resultType="com.com.com.project.EPBoardVO">
         SELECT b.*, m.grade 
         FROM ep_board b
         JOIN ep_member m ON b.name = m.name
+        ORDER BY b.seq
     </select>
 
     <select id="getWrittenContentByUser" parameterType="String" resultType="com.com.com.project.EPBoardVO">
@@ -36,29 +36,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM ep_board b
         JOIN ep_member m ON b.name = m.name
         WHERE b.name = #{name}
+        ORDER BY b.seq
     </select>
 
     <select id="getBoard" resultType="com.com.com.project.EPBoardVO" parameterType="int">
         SELECT * FROM ep_board WHERE seq = #{seq}
     </select>
 
-     <update id="updateBoard" parameterType="com.com.com.project.EPBoardVO">
+    <update id="updateBoard" parameterType="com.com.com.project.EPBoardVO">
         UPDATE ep_board 
         <choose>
-        	<when test="grade == '사원'">
-        		SET title = #{title}, content = #{content}, wait = #{wait}, com_date = #{com_date, jdbcType=TIMESTAMP}
-        		WHERE seq = #{seq}
-        	</when>
-        	<when test="grade == '대리'">
-        		SET title = #{title}, content = #{content}, wait = #{wait}, com_date = #{com_date, jdbcType=TIMESTAMP}
-        		WHERE seq = #{seq}
-        	</when>
-        	<otherwise>
-        		 SET title = #{title}, content = #{content}, wait = #{wait}, com_date = #{com_date, jdbcType=TIMESTAMP}, c_name = #{c_name} 
-        		WHERE seq = #{seq}
-        	</otherwise>
+            <when test="grade == '사원'">
+                SET title = #{title}, content = #{content}, wait = #{wait}, com_date = #{com_date, jdbcType=TIMESTAMP}
+                WHERE seq = #{seq}
+            </when>
+            <when test="grade == '대리'">
+                SET title = #{title}, content = #{content}, wait = #{wait}, com_date = #{com_date, jdbcType=TIMESTAMP}
+                WHERE seq = #{seq}
+            </when>
+            <otherwise>
+                SET title = #{title}, content = #{content}, wait = #{wait}, com_date = #{com_date, jdbcType=TIMESTAMP}, c_name = #{c_name} 
+                WHERE seq = #{seq}
+            </otherwise>
         </choose>
-      </update>
+    </update>
 
     <insert id="insertHistory" parameterType="com.com.com.project.EPHistoryVO">
         INSERT INTO ep_history (h_seq, reg_date, name, wait)
@@ -71,45 +72,42 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE h_seq = #{seq}
         ORDER BY reg_date DESC
     </select>    
-    
+
     <select id="searchContent" parameterType="map" resultType="com.com.com.project.EPBoardVO">
-    SELECT b.*, m.grade
-    FROM ep_board b
-    JOIN ep_member m ON b.name = m.name
-    WHERE 1=1
-    <if test="searchType != null and !searchType.isEmpty() and searchKeyword != null and !searchKeyword.isEmpty()">
-        <choose>
-            <when test="searchType == '작성자'">
-                AND b.name LIKE '%' || #{searchKeyword} || '%'
-            </when>
-            <when test="searchType == '결재자'">
-                AND b.c_name LIKE '%' || #{searchKeyword} || '%'
-            </when>
-            <otherwise>
-                AND (b.title LIKE '%' || #{searchKeyword} || '%' OR b.content LIKE '%' || #{searchKeyword} || '%')
-            </otherwise>
-        </choose>
-    </if>
-    <if test="approvalStatus != null and !approvalStatus.isEmpty()">
-        AND b.wait = #{approvalStatus}
-    </if>
-    <if test="startDate != null and !startDate.isEmpty() and endDate != null and !endDate.isEmpty()">
-        AND b.reg_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
-    </if>
-    <if test="grade == '과장' or grade == '부장'">
-        AND (b.wait != '임시저장' OR b.name = #{userName})
-    </if>
-</select>
+        SELECT b.*, m.grade
+        FROM ep_board b
+        JOIN ep_member m ON b.name = m.name
+        WHERE 1=1
+        <if test="searchType != null and !searchType.isEmpty() and searchKeyword != null and !searchKeyword.isEmpty()">
+            <choose>
+                <when test="searchType == '작성자'">
+                    AND b.name LIKE '%' || #{searchKeyword} || '%'
+                </when>
+                <when test="searchType == '결재자'">
+                    AND b.c_name LIKE '%' || #{searchKeyword} || '%'
+                </when>
+                <otherwise>
+                    AND (b.title LIKE '%' || #{searchKeyword} || '%' OR b.content LIKE '%' || #{searchKeyword} || '%')
+                </otherwise>
+            </choose>
+        </if>
+        <if test="approvalStatus != null and !approvalStatus.isEmpty()">
+            AND b.wait = #{approvalStatus}
+        </if>
+        <if test="startDate != null and !startDate.isEmpty() and endDate != null and !endDate.isEmpty()">
+            AND b.reg_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD') + 1
+        </if>
+        <if test="userName != null and userName != ''">
+            AND b.name = #{userName}
+        </if>
+        <if test="userName == null or userName == ''">
+            AND (b.wait != '임시저장' OR b.name IS NOT NULL)
+        </if>
+        ORDER BY b.seq
+    </select>
 
-<select id="getMemberByName" parameterType="String" resultType="com.com.com.project.MemberVO">
-    SELECT * FROM ep_member WHERE name = #{name}
-</select>
-
-
-
-
+    <select id="getMemberByName" parameterType="String" resultType="com.com.com.project.MemberVO">
+        SELECT * FROM ep_member WHERE name = #{name}
+    </select>
     
-    
-    
-
 </mapper>

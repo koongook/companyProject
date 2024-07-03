@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>로그인</title>
 <script>
     function displayAlert() {
         var error = document.getElementById("error").value;
@@ -30,6 +31,8 @@
             <input type="submit" value="로그인">
         </div>
     </form>
-    <input type="hidden" id="error" value="${error}">
+    <c:if test="${not empty param.error}">
+        <input type="hidden" id="error" value="${param.error}">
+    </c:if>
 </body>
 </html>

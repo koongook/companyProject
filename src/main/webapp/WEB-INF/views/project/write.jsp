@@ -40,7 +40,7 @@
 		<table>
 			<tr><td>번호 :<input type="text" name="seq" value="${seq}" readonly> </td>
 			</tr>
-			<tr><td>작성자 :<input type="text" name="name" value="${name}"readonly> </td>
+			<tr><td>작성자 :<input type="text" name="name" value="${name}" readonly> </td>
 			</tr>
 			<tr><td>제목 :<input type="text" name="title"> </td></tr>
 			<tr><td>내용 :<textarea name="content"></textarea> </td></tr>
